@@ -288,7 +288,6 @@ class FrmEntriesHelper {
 		}
 
 		$unfiltered_value = $value;
-		// TODO Check for type here before unserializing.
 		if ( FrmAppHelper::field_type_requires_unserialize( $field->type ) ) {
 			FrmAppHelper::unserialize_or_decode( $unfiltered_value );
 		}
