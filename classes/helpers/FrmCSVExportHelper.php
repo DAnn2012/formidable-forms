@@ -500,12 +500,17 @@ class FrmCSVExportHelper {
 		return false;
 	}
 
+	/**
+	 * @param array $row
+	 * @return void
+	 */
 	private static function add_field_values_to_csv( &$row ) {
 		foreach ( self::$fields as $col ) {
 			$field_value = isset( self::$entry->metas[ $col->id ] ) ? self::$entry->metas[ $col->id ] : false;
 
-			// TODO Check for field type here before unserializing.
-			FrmAppHelper::unserialize_or_decode( $field_value );
+			if ( FrmAppHelper::field_type_requires_unserialize( $col->type ) ) {
+				FrmAppHelper::unserialize_or_decode( $field_value );
+			}
 			self::add_array_values_to_columns( $row, compact( 'col', 'field_value' ) );
 
 			$field_value = apply_filters(
