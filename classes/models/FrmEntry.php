@@ -460,7 +460,7 @@ class FrmEntry {
 	 * @return bool
 	 */
 	private static function field_type_requires_unserialize( $type ) {
-		return in_array( $type, array( 'checkbox', 'name', 'address', 'credit_card' ), true );
+		return in_array( $type, array( 'checkbox', 'name', 'address', 'credit_card', 'select' ), true );
 	}
 
 	/**
