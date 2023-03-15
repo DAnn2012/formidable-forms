@@ -2740,6 +2740,9 @@ class FrmAppHelper {
 	 * all data to json.
 	 *
 	 * @since 4.02.03
+	 *
+	 * @param mixed $value
+	 * @return void
 	 */
 	public static function unserialize_or_decode( &$value ) {
 		if ( is_array( $value ) ) {
@@ -2747,7 +2750,14 @@ class FrmAppHelper {
 		}
 
 		if ( is_serialized( $value ) ) {
-			$value = maybe_unserialize( $value );
+			$value = @unserialize(
+				trim( $value ),
+				array( 'allowed_classes' => array() )
+			);
+			if ( $value instanceof __PHP_Incomplete_Class ) {
+				// This happens if you were to pass a serialized object.
+				$value = '';
+			}
 		} else {
 			$value = self::maybe_json_decode( $value, false );
 		}
