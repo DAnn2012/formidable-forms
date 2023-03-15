@@ -2750,14 +2750,13 @@ class FrmAppHelper {
 		}
 
 		if ( is_serialized( $value ) ) {
-			$value = @unserialize(
+			$unserialized = @unserialize(
 				trim( $value ),
 				// Unserialize is used for arrays only so don't allow any object types.
-				array( 'allowed_classes' => array() )
+				array( 'allowed_classes' => false )
 			);
-			if ( $value instanceof __PHP_Incomplete_Class ) {
-				// This happens if you were to pass a serialized object.
-				$value = '';
+			if ( is_array( $unserialized ) ) {
+				$value = $unserialized;
 			}
 		} else {
 			$value = self::maybe_json_decode( $value, false );
