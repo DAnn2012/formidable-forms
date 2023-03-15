@@ -415,7 +415,7 @@ class FrmEntry {
 				'item_id'    => $entry->id,
 				'field_id !' => 0,
 			),
-			'field_id, meta_value, field_key, item_id'
+			'field_id, meta_value, field_key, item_id, f.type'
 		);
 
 		$entry->metas = array();
@@ -423,7 +423,10 @@ class FrmEntry {
 		$include_key = apply_filters( 'frm_include_meta_keys', false, array( 'form_id' => $entry->form_id ) );
 		foreach ( $metas as $meta_val ) {
 			if ( $meta_val->item_id == $entry->id ) {
-				FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+				if ( self::field_type_requires_unserialize( $meta_val->type ) ) {
+					FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+				}
+
 				$entry->metas[ $meta_val->field_id ] = $meta_val->meta_value;
 				if ( $include_key ) {
 					$entry->metas[ $meta_val->field_key ] = $entry->metas[ $meta_val->field_id ];
@@ -436,7 +439,9 @@ class FrmEntry {
 				$entry->metas[ $meta_val->field_id ] = array();
 			}
 
-			FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+			if ( self::field_type_requires_unserialize( $meta_val->type ) ) {
+				FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+			}
 			$entry->metas[ $meta_val->field_id ][] = $meta_val->meta_value;
 
 			unset( $meta_val );
@@ -446,6 +451,16 @@ class FrmEntry {
 		FrmDb::set_cache( $entry->id, $entry, 'frm_entry' );
 
 		return $entry;
+	}
+
+	/**
+	 * @since 6.1.3
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	private static function field_type_requires_unserialize( $type ) {
+		return in_array( $type, array( 'checkbox', 'name', 'address', 'credit_card' ), true );
 	}
 
 	/**
