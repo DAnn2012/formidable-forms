@@ -423,7 +423,7 @@ class FrmEntry {
 		$include_key = apply_filters( 'frm_include_meta_keys', false, array( 'form_id' => $entry->form_id ) );
 		foreach ( $metas as $meta_val ) {
 			if ( $meta_val->item_id == $entry->id ) {
-				if ( self::field_type_requires_unserialize( $meta_val->type ) ) {
+				if ( FrmAppHelper::field_type_requires_unserialize( $meta_val->type ) ) {
 					FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 				}
 
@@ -439,7 +439,7 @@ class FrmEntry {
 				$entry->metas[ $meta_val->field_id ] = array();
 			}
 
-			if ( self::field_type_requires_unserialize( $meta_val->type ) ) {
+			if ( FrmAppHelper::field_type_requires_unserialize( $meta_val->type ) ) {
 				FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 			}
 			$entry->metas[ $meta_val->field_id ][] = $meta_val->meta_value;
@@ -451,16 +451,6 @@ class FrmEntry {
 		FrmDb::set_cache( $entry->id, $entry, 'frm_entry' );
 
 		return $entry;
-	}
-
-	/**
-	 * @since 6.1.3
-	 *
-	 * @param string $type
-	 * @return bool
-	 */
-	private static function field_type_requires_unserialize( $type ) {
-		return in_array( $type, array( 'checkbox', 'name', 'address', 'credit_card', 'select' ), true );
 	}
 
 	/**
@@ -533,7 +523,11 @@ class FrmEntry {
 			$meta_where['item_id'] = array_keys( $entries );
 		}
 
-		$metas = FrmDb::get_results( $wpdb->prefix . 'frm_item_metas it LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_fields fi ON (it.field_id = fi.id)', $meta_where, 'item_id, meta_value, field_id, field_key, form_id' );
+		$metas = FrmDb::get_results(
+			$wpdb->prefix . 'frm_item_metas it LEFT OUTER JOIN ' . $wpdb->prefix . 'frm_fields fi ON it.field_id = fi.id',
+			$meta_where,
+			'item_id, meta_value, field_id, field_key, form_id, fi.type'
+		);
 
 		unset( $meta_where );
 
@@ -551,8 +545,10 @@ class FrmEntry {
 				$entries[ $meta_val->item_id ]->metas = array();
 			}
 
-			// TODO Only call this for target field types.
-			FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+			if ( FrmAppHelper::field_type_requires_unserialize( $meta_val->type ) ) {
+				FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
+			}
+
 			$entries[ $meta_val->item_id ]->metas[ $meta_val->field_id ] = $meta_val->meta_value;
 			unset( $m_key, $meta_val );
 		}

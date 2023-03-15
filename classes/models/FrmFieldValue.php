@@ -263,7 +263,10 @@ class FrmFieldValue {
 		if ( $this->saved_value !== '' ) {
 			if ( ! is_array( $this->saved_value ) && ! is_object( $this->saved_value ) ) {
 				// TODO Only call this for a field type that expects the saved value to get serialized.
-				FrmAppHelper::unserialize_or_decode( $this->saved_value );
+				$field_type = FrmField::get_field_type( $this->field );
+				if ( FrmAppHelper::field_type_requires_unserialize( $field_type ) ) {
+					FrmAppHelper::unserialize_or_decode( $this->saved_value );
+				}
 			}
 
 			if ( is_array( $this->saved_value ) && empty( $this->saved_value ) ) {

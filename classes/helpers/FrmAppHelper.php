@@ -2764,6 +2764,16 @@ class FrmAppHelper {
 	}
 
 	/**
+	 * @since 6.1.3
+	 *
+	 * @param string $type
+	 * @return bool
+	 */
+	public static function field_type_requires_unserialize( $type ) {
+		return in_array( $type, array( 'checkbox', 'name', 'address', 'credit_card', 'select' ), true );
+	}
+
+	/**
 	 * Decode a JSON string.
 	 * Do not switch shortcodes like [24] to array unless intentional ie XML values.
 	 *
