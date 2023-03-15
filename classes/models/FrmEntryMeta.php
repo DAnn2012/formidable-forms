@@ -239,8 +239,10 @@ class FrmEntryMeta {
 		}
 
 		$result = FrmDb::get_var( $get_table, $query, 'meta_value' );
-		// TODO Only call this when we expect serialized data.
-		FrmAppHelper::unserialize_or_decode( $result );
+		$type   = FrmDb::get_var( 'frm_fields', array( 'id' => $field_id ), 'type' );
+		if ( FrmAppHelper::field_type_requires_unserialize( $type ) ) {
+			FrmAppHelper::unserialize_or_decode( $result );
+		}
 		$result = wp_unslash( $result );
 
 		return $result;
