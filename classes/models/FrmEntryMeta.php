@@ -239,6 +239,7 @@ class FrmEntryMeta {
 		}
 
 		$result = FrmDb::get_var( $get_table, $query, 'meta_value' );
+		// TODO Only call this when we expect serialized data.
 		FrmAppHelper::unserialize_or_decode( $result );
 		$result = wp_unslash( $result );
 
@@ -266,6 +267,7 @@ class FrmEntryMeta {
 		}
 
 		foreach ( $values as $k => $v ) {
+			// TODO Only call this for types that expect serialized data.
 			FrmAppHelper::unserialize_or_decode( $v );
 			$values[ $k ] = $v;
 			unset( $k, $v );
@@ -323,6 +325,7 @@ class FrmEntryMeta {
 		}
 
 		foreach ( $results as $k => $result ) {
+			// TODO Only call this for types that expect serialized data.
 			FrmAppHelper::unserialize_or_decode( $result->meta_value );
 			$results[ $k ]->meta_value = wp_unslash( $result->meta_value );
 			unset( $k, $result );

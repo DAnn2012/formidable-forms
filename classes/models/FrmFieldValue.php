@@ -262,6 +262,7 @@ class FrmFieldValue {
 	protected function clean_saved_value() {
 		if ( $this->saved_value !== '' ) {
 			if ( ! is_array( $this->saved_value ) && ! is_object( $this->saved_value ) ) {
+				// TODO Only call this for a field type that expects the saved value to get serialized.
 				FrmAppHelper::unserialize_or_decode( $this->saved_value );
 			}
 

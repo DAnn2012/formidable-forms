@@ -1539,6 +1539,7 @@ class FrmXMLHelper {
 	}
 
 	public static function cdata( $str ) {
+		// TODO Can we only unserialize here when necessary?
 		FrmAppHelper::unserialize_or_decode( $str );
 		if ( is_array( $str ) ) {
 			$str = json_encode( $str );

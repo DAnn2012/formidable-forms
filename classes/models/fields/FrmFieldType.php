@@ -237,6 +237,8 @@ DEFAULT_HTML;
 
 		$field['html_name']     = $field_name;
 		$field['html_id']       = $html_id;
+
+		// TODO Only call this for a field type that expects serialized data.
 		FrmAppHelper::unserialize_or_decode( $field['default_value'] );
 
 		$display = $this->display_field_settings();
@@ -1363,6 +1365,7 @@ DEFAULT_HTML;
 		}
 
 		$checked = $value;
+		// TODO Only check for this field types that support serialized data.
 		FrmAppHelper::unserialize_or_decode( $checked );
 
 		if ( ! is_array( $checked ) ) {

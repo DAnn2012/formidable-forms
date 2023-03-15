@@ -551,6 +551,7 @@ class FrmEntry {
 				$entries[ $meta_val->item_id ]->metas = array();
 			}
 
+			// TODO Only call this for target field types.
 			FrmAppHelper::unserialize_or_decode( $meta_val->meta_value );
 			$entries[ $meta_val->item_id ]->metas[ $meta_val->field_id ] = $meta_val->meta_value;
 			unset( $m_key, $meta_val );

@@ -288,6 +288,7 @@ class FrmEntriesHelper {
 		}
 
 		$unfiltered_value = $value;
+		// TODO Check for type here before unserializing.
 		FrmAppHelper::unserialize_or_decode( $unfiltered_value );
 
 		$value = apply_filters( 'frm_display_value_custom', $unfiltered_value, $field, $atts );
