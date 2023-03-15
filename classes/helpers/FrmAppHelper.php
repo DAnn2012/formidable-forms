@@ -2752,6 +2752,7 @@ class FrmAppHelper {
 		if ( is_serialized( $value ) ) {
 			$value = @unserialize(
 				trim( $value ),
+				// Unserialize is used for arrays only so don't allow any object types.
 				array( 'allowed_classes' => array() )
 			);
 			if ( $value instanceof __PHP_Incomplete_Class ) {
